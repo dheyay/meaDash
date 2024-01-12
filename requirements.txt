@@ -1,0 +1,9 @@
+numpy
+matplotlib
+scipy
+plotly
+torch
+bokeh
+networkx
+xarray
+pandas
