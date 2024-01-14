@@ -1,38 +1,42 @@
 import json
 import numpy as np
 import pandas as pd
+import scipy.io as sios
+
+def load_data_from_mat(file_path):
+    data = sios.loadmat(file_path)
+    return data['filteredSignal'], data['spiketimestamps']
 
 #TODO: Update how the mapping is used (allow mapping to be in seperate config file)
 #TODO: Channel info can be custom, so can the mapping
-#TODO: Mapping needs to be in the format -> row['RHS']: [row['Intan'], row['MEA Square']]
-def convert_to_60MEA_mapping(self, mapping):
-    custom_data = np.zeros((60, self.initial_signal.shape[1]))
-    channel_info = np.where(self.channel_info == 0, np.nan, self.channel_info)
+# Custom mapping is hard since we need amplifier data to get correct channel map, adding a mapping on top would be ok
+def convert_to_60MEA_mapping(initial_signal, channel_info):
+    mapping = load_node_mappings()
+    rearranged_data = np.zeros((60, initial_signal.shape[1]))
+    channel_info = np.where(channel_info == 0, np.nan, channel_info)
     channel_MEA_map = channel_info.copy()
-
     for i in range(len(channel_info)):
         try:
-            channel_MEA_map[i] = mapping[channel_info[i]]
-        except KeyError:
+            channel_MEA_map[i] = mapping[str(int(channel_info[i]))]
+        except:
             channel_MEA_map[i] = np.nan
-            print("Node missing: ", channel_info[i])
 
+    # rearrange data to match 60MEA layout
     for i, channel in enumerate(channel_MEA_map):
         try:
             if not np.isnan(channel):
-                custom_data[i] = self.initial_signal[int(channel)]
+                rearranged_data[i] = initial_signal[int(channel)]
         except IndexError:
-            print("Missing Node")
-    return custom_data
+            pass
+    return rearranged_data
 
 # TODO: Add information about the mapping
-# The mapping is a dictionary that maps the custom channel name to the index of the amplifier channel
-# The mapping is generated from the amplifier channel data in an INTAN rhs file
 def load_node_mappings():
     with open(r"config/electrode_mapping.json", 'r') as f:
         data = json.load(f)
-    return {row['RHS']: [row['Intan'], row['MEA Square']] for row in data}
+    return data['amplifier_channel_map']
 
+# If user want's to generate a custom channel info array
 def create_channel_info(nodes_dict, num_channels=60):
     channel_info = np.zeros(num_channels, dtype=int)
     for node, values in nodes_dict.items():
@@ -43,18 +47,13 @@ def create_channel_info(nodes_dict, num_channels=60):
             channel_info[intan_channel] = 0  # Set to 0 for invalid channels
     return channel_info
 
-def generate_mapping(amplifier_channels):
+# If custom mapping needs to be generated from amplifier channel data
+def generate_amplifier_mapping(amplifier_channel_data):
     mapping = {}
-    for i, channel_info in enumerate(amplifier_channels):
+    for i, channel_info in enumerate(amplifier_channel_data):
         custom_channel_name = int(channel_info['custom_channel_name'])
         mapping[custom_channel_name] = i
     return mapping
-
-# # Example usage:
-# nodes_dict = load_node_mappings()
-# channel_info = create_channel_info(nodes_dict)
-# # Assuming 'result' is a predefined variable containing amplifier channel data.
-# mapping = generate_mapping(result['amplifier_channels'])
 
 def make_grid_layout(grid_array):
     layout = np.full((8, 8), np.nan)

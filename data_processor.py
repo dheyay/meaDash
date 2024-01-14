@@ -1,5 +1,6 @@
 # standard imports
 import os
+from utils import convert_to_60MEA_mapping
 
 # third party imports
 import numpy as np
@@ -7,19 +8,19 @@ import scipy.io as sios
 
 class DataProcessor:
     def __init__(self, initial_signal, spike_timestamps, sampling_rate, channel_info):
-        # TODO: Conver the intial signal to a 60MEA mapping
-        self.initial_signal = initial_signal
-        self.spike_timestamps = spike_timestamps
+        # TODO: Conver the intial signal and spike_timestamps to a 60MEA mapping
+        self.initial_signal = convert_to_60MEA_mapping(initial_signal, channel_info)
+        self.spike_timestamps = convert_to_60MEA_mapping(spike_timestamps, channel_info)
         self.sampling_rate = sampling_rate
         self.channel_info = channel_info
-        self.raster = create_raster()
+        self.raster = self.create_raster()
 
-        def create_raster():
-            raster = np.zeros_like(self.initial_signal)
-            for channel in range(len(self.spike_timestamps)):
-                for ts in self.spike_timestamps[channel]:
-                    raster[channel, ts] = 1
-            return raster
+    def create_raster(self):
+        raster = np.zeros_like(self.initial_signal)
+        for channel in range(len(self.spike_timestamps)):
+            for ts in self.spike_timestamps[channel]:
+                raster[channel, int(ts)] = 1
+        return raster
 
     def get_spikes_by_timestamp_per_channel(self, left_bound=0.2, right_bound=0.3):
         l = -int(left_bound * self.sampling_rate)
@@ -44,8 +45,10 @@ class DataProcessor:
                 binary_presence[channel, bucket] = np.any(self.raster[channel, start_index:end_index])
         return binary_presence.astype(int)
 
-    def aggregate_raster_spike_counts(self, time_value):
+    def aggregate_raster_spike_counts(self, time_value = 1, total=False):
         assert time_value <= self.raster.shape[1] / self.sampling_rate, "Time value exceeds signal duration in seconds"
+        if total == True:
+            return np.sum(self.raster, axis=1)
         bucket_size = int(self.sampling_rate * time_value)
         num_buckets = self.raster.shape[1] // bucket_size
         aggregated_counts = np.zeros((self.raster.shape[0], num_buckets))
@@ -60,3 +63,4 @@ class DataProcessor:
     def calculate_final_spiking_rate(self, time_value, active_channel_threshold=5):
         pass
 
+    #TODO: Implement convolution function for the channels (boxcar, gaussian, double exponential)
