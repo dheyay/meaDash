@@ -5,6 +5,7 @@ from utils import convert_to_60MEA_mapping
 # third party imports
 import numpy as np
 import scipy.io as sios
+import scipy.signal as ssignal
 
 class DataProcessor:
     def __init__(self, initial_signal, spike_timestamps, sampling_rate, channel_info):
@@ -57,10 +58,21 @@ class DataProcessor:
             end = start + bucket_size
             aggregated_counts[:, bucket] = np.sum(self.raster[:, start:end], axis=1)
         return aggregated_counts
+    
+    def get_active_channels(self, active_channel_threshold = 5):
+        aggregate = self.aggregate_raster_spike_counts(total=True)
+        active_channels = np.array([i for i, channel in enumerate(aggregate) if np.mean(channel) >= 5])
+        return active_channels
 
-
-    #TODO: Implement this
-    def calculate_final_spiking_rate(self, time_value, active_channel_threshold=5):
-        pass
-
-    #TODO: Implement convolution function for the channels (boxcar, gaussian, double exponential)
+    def convolve_signal(self, windowsize, conv_type='boxcar'):
+        if conv_type == 'boxcar':
+            kernel = ssignal.boxcar(int(windowsize * self.sampling_rate))
+        else:
+            raise ValueError("Invalid convolution type. Supported types are 'boxcar' and 'dual_exp'.")
+        
+        convolved_signal = np.zeros_like(self.raster)
+        for i in range(self.raster.shape[0]):
+            f = self.raster[i]
+            fw = ssignal.convolve(f, kernel, mode='same')
+            convolved_signal[i] = fw
+        return convolved_signal

@@ -16,14 +16,14 @@ def create_dropdown_options(channel_info):
 
 def create_app_layout(channel_info):
     return html.Div([
-        html.H1("Neural Signal Analysis Dashboard [60 MEA]", style={'textAlign': 'center', 'margin': '50px'}),
+        html.H2("Neural Signal Analysis Dashboard [60 MEA]", style={'textAlign': 'left', 'margin': '30px'}),
         dbc.Row([
             dbc.Col(dcc.Dropdown(
                 id='channel-dropdown',
                 value=channel_info[0],
                 options=create_dropdown_options(channel_info),
                 placeholder='Select a Channel'
-            ), width={'size': 4, 'offset': 3}, style={'margin': '10px'}),
+            ), width={'size': 4, 'offset': 3}, style={'margin': '30px'}),
             dbc.Col(dcc.RadioItems(
                 id='plot-type-selector',
                 options=[
@@ -38,13 +38,13 @@ def create_app_layout(channel_info):
         ]),
         html.Hr(),
         dbc.Row([
-            dbc.Col(dcc.Graph(id='raster-plot')),
+            dbc.Col(dcc.Graph(id='raster-plot'), style={'resize': 'both', 'overflow': 'auto'}),
         ]),
         dbc.Row([
             dbc.Row([
                 dbc.Col(
                     [
-                        dcc.Graph(id='spike-activity-heatmap'),
+                        dcc.Graph(id='spike-activity-heatmap', style={'resize': 'both', 'overflow': 'auto'}),
                         dbc.InputGroup([
                             dbc.Label("Time Value (s):", className="mr-2"),
                             dbc.Input(id='time-value-input', type='number', min=0, step=0.1, value=1),
@@ -52,15 +52,15 @@ def create_app_layout(channel_info):
                         ], style={'width': '400px', 'align': 'center'})
                     ],
                     align="center",
-                    style={'paddingLeft': '100px', 'margin': '10px'}
+                    style={'paddingLeft': '200px'}
                 ),
-                dbc.Col(dcc.Graph(id='spike-frequency-heatmap'), align="center"),
+                dbc.Col(dcc.Graph(id='spike-frequency-heatmap', style={'resize': 'both', 'overflow': 'auto'}), align="center"),
             ]),
         ]),
         dbc.Row([
-            dbc.Col(dcc.Graph(id='average-spiking-rate-plot')),
+            dbc.Col(dcc.Graph(id='average-spiking-rate-plot'), style={'resize': 'both', 'overflow': 'auto'}),
         ]),
-    ], style={'padding': '20px'})
+    ], style={'margin': '30px'})
 
 def update_channel_plot(data_processor, channel_info, value, plot_type):
     channel_idx = np.where(channel_info == value)[0][0]

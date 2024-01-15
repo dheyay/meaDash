@@ -1,0 +1,21 @@
+/* Custom styles for the dashboard */
+.sidebar {
+    background-color: #ddd; /* Light grey background for the sidebar */
+    padding: 20px;
+    overflow-y: auto; /* Enable vertical scrolling */
+    top: 0; /* Position the sidebar at the top */
+    left: 0; /* Position the sidebar at the left */
+}
+
+.sidebar .nav-link {
+    color: #333; /* Dark text for better contrast */
+}
+
+.sidebar .nav-link.active {
+    background-color: #c9c6c6; /* Light grey background for active link */
+    color: #000;
+}
+
+.content {
+    padding: 20px;
+}

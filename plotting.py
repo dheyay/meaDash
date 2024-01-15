@@ -36,7 +36,7 @@ def plot_raster(boolean_signal, title="Channel Raster Plot", xlabel="Time", ylab
         yaxis_title=ylabel,
         yaxis=dict(range=[-0.5, num_channels - 0.5], tickvals=list(range(num_channels))),
         xaxis=dict(range=[0, num_time_points]),
-        height=800
+        height=750
     )
     return fig
 
@@ -139,4 +139,14 @@ def plot_average_spiking_rate(signal):
                       xaxis_title='Time (s)',
                       yaxis_title='Spikes',
                       showlegend=False)
+    return fig
+
+def plot_firing_rate(time_vector, firing_rate):
+    fig = go.Figure(data=go.Scatter(x=time_vector, y=firing_rate))
+    fig.update_layout(
+        title='Aggregate Firing Rate',
+        xaxis_title='Time (s)',
+        yaxis_title='Firing Rate (spikes/second)',
+        showlegend=False
+    )
     return fig

@@ -6,7 +6,10 @@ import numpy as np
 import tkinter as tk
 from tkinter import filedialog, messagebox
 import scipy.io as sio
-from board import start_dash
+
+from index import start_dash
+
+# from board import start_dash
 """
 Sample Data processing pipeline
 
