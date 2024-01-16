@@ -31,6 +31,14 @@ To install meaDash, follow these steps:
     python example_dashboard.py
     ```
 
+### Setup and Execution Scripts
+
+To set up a Python virtual environment and install the required dependencies, you can use the following scripts:
+
+- `setup.sh` (for Unix-based systems) or `setup.bat` (for Windows systems): These scripts create a virtual environment and install the necessary packages using `pip`. You can modify these scripts to add any additional setup steps or customize the environment.
+
+- `run.sh` (for Unix-based systems) or `run.bat` (for Windows systems): This script activates the virtual environment and runs the program. You can modify this script to include any additional commands or configurations required to run your program.
+
 ## Usage
 
 ### Configuration of the MEA
