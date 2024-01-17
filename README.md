@@ -2,7 +2,7 @@
 
 meaDash is a dashboard for analyzing and visualizing neural signal data obtained from a multi-electrode array (MEA). This project aims to provide a user-friendly interface for researchers and scientists to explore and gain insights from their MEA data.
 
-(currently customized for use in Center for BioMedical Signal Processing and Computation, University of California Irvine)
+(currently under development for use in Center for BioMedical Signal Processing and Computation, University of California Irvine)
 
 ## Features
 
