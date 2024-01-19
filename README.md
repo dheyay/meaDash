@@ -33,7 +33,7 @@ To install meaDash, follow these steps:
 
 ### Setup and Execution Scripts
 
-To set up a Python virtual environment and install the required dependencies, you can use the following scripts:
+To set up a Python virtual environment and install the required dependencies, you can use the following scripts (in the scripts directory):
 
 - `setup.sh` (for Unix-based systems) or `setup.bat` (for Windows systems): These scripts create a virtual environment and install the necessary packages using `pip`. You can modify these scripts to add any additional setup steps or customize the environment.
 
