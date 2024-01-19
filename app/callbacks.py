@@ -17,8 +17,8 @@ def update_spike_frequency_heatmap(data_processor):
     aggregated_spikes = data_processor.aggregate_raster_spike_counts(total=True)
     return plot_spike_frequency_heatmap(aggregated_spikes, data_processor.channel_info)
 
-def update_spike_activity_heatmap(data_processor, selected_channel, n_clicks, time_value=1):
-    if selected_channel is not None and n_clicks is not None and time_value is not None:
+def update_spike_activity_heatmap(data_processor, n_clicks, time_value=1):
+    if n_clicks is not None and time_value is not None:
         aggregated_spikes = data_processor.aggregate_raster_spike_counts(time_value=float(time_value), total=False)
         return plot_spike_activity_heatmap(aggregated_spikes)
     return go.Figure()
@@ -76,8 +76,8 @@ def register_callbacks(server, data_processor: DataProcessor, channel_info, debu
         Input('confirm-button', 'n_clicks'),
         State('time-value-input', 'value')
     )
-    def update_spike_activity_heatmap_callback(selected_channel, n_clicks, time_value=1):
-        return update_spike_activity_heatmap(data_processor, selected_channel, n_clicks, time_value)
+    def update_spike_activity_heatmap_callback(n_clicks, time_value=1):
+        return update_spike_activity_heatmap(data_processor,n_clicks, time_value)
     
     
     @server.app.callback(

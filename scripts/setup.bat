@@ -1,5 +1,4 @@
 @echo off
-cd ""
 
 REM Check if the virtual environment exists
 if not exist "venv" (
@@ -19,4 +18,3 @@ REM Deactivate the virtual environment
 deactivate
 
 echo Setup complete. To run the dashboard, execute 'run.bat'.
-
