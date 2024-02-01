@@ -15,4 +15,3 @@ pip install -r requirements.txt
 deactivate
 
 echo "Setup complete. Run 'source run.sh' to start the dashboard."
-
