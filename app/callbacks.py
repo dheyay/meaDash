@@ -6,11 +6,12 @@ from data_processing.data_processor import DataProcessor
 
 def update_channel_plot(data_processor, channel_info, value, plot_type):
     channel_idx = value
+    time_vec = np.arange(data_processor.initial_signal[0].shape[0]) / data_processor.sampling_rate
     if value is not None:
         if plot_type == 'initial':
-            return plot_signal(data_processor.initial_signal[channel_idx, :])
+            return plot_signal(data_processor.initial_signal[channel_idx, :], time_vector=time_vec)
         elif plot_type == 'raster':
-            return plot_single_channel_raster(data_processor.raster, channel_idx)
+            return plot_single_channel_raster(data_processor.raster, channel_idx, time_vector=time_vec)
     return go.Figure()
 
 def update_spike_frequency_heatmap(data_processor):
@@ -29,7 +30,7 @@ def update_spiking_rate_plot(data_processor, windowsize):
     conv_sum_spikepersecond = conv_sum / windowsize
     sampleindices = np.arange(conv_sum.shape[0])
     timeinseconds_vec = sampleindices / data_processor.sampling_rate
-    return plot_firing_rate(timeinseconds_vec, conv_sum_spikepersecond, title=r"Spiking Rate - window size: " + str(windowsize) + " s")
+    return plot_firing_rate(conv_sum_spikepersecond, timeinseconds_vec, title=r"Spiking Rate - window size: " + str(windowsize) + " s")
 
 def update_psd_plot(data_processor, windowsize):
     convolved_sig = data_processor.convolve_signal(windowsize, 'boxcar')

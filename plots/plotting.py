@@ -4,7 +4,7 @@ import sciplotlib.style as splstyle
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 
-def plot_single_channel_raster(boolean_signal, channel_idx, title="Channel Raster Plot", xlabel="Time"):
+def plot_single_channel_raster(boolean_signal, channel_idx, time_vector, title="Channel Raster Plot", xlabel="Time"):
     """
     Plots a raster plot for a single channel.
 
@@ -19,8 +19,9 @@ def plot_single_channel_raster(boolean_signal, channel_idx, title="Channel Raste
     """
     num_time_points = boolean_signal.shape[1]
     spike_times = np.where(boolean_signal[channel_idx])[0]
+    spike_time_secs = time_vector[spike_times]
     scatter_trace = go.Scatter(
-        x=spike_times,
+        x=spike_time_secs,
         y=[0] * len(spike_times),
         mode='markers',
         marker=dict(symbol='line-ns-open', size=100),
@@ -28,7 +29,7 @@ def plot_single_channel_raster(boolean_signal, channel_idx, title="Channel Raste
 
     layout = go.Layout(
         title=title,
-        xaxis=dict(title=xlabel, range=[0, num_time_points]),
+        xaxis=dict(title=xlabel, range=[time_vector[0], time_vector[-1]]),
         yaxis=dict(visible=False),
     )
     fig = go.Figure(data=[scatter_trace], layout=layout)
@@ -64,7 +65,7 @@ def plot_raster(boolean_signal, title="Channel Raster Plot", xlabel="Time", ylab
     )
     return fig
 
-def plot_signal(signal, title='Signal', xlabel='Time', ylabel='Amplitude'):
+def plot_signal(signal, time_vector, title='Signal', xlabel='Time', ylabel='Amplitude'):
     """
     Plots a signal.
 
@@ -77,7 +78,7 @@ def plot_signal(signal, title='Signal', xlabel='Time', ylabel='Amplitude'):
     Returns:
     plotly.graph_objects.Figure: The generated plotly figure.
     """
-    fig = go.Figure(data=go.Scatter(y=signal))
+    fig = go.Figure(data=go.Scatter(x=time_vector, y=signal))
     fig.update_layout(title=title, xaxis_title=xlabel, yaxis_title=ylabel)
     return fig
 
@@ -194,7 +195,7 @@ def plot_correlation_matrix(electrode_correlation_matrix):
             cbar = fig.colorbar(im)
         return fig
     
-def plot_average_spiking_rate(signal, title='Average Spiking Rate'):
+def plot_average_spiking_rate(spikingRate, title='Average Spiking Rate'):
     """
     Plots the average spiking rate of a signal.
 
@@ -205,14 +206,14 @@ def plot_average_spiking_rate(signal, title='Average Spiking Rate'):
     Returns:
     plotly.graph_objects.Figure: The generated plotly figure.
     """
-    fig = go.Figure(data=go.Scatter(x=np.arange(len(signal)), y=signal))
+    fig = go.Figure(data=go.Scatter(x=np.arange(len(spikingRate)), y=spikingRate))
     fig.update_layout(title=title,
                       xaxis_title='Time (s)',
                       yaxis_title='Spikes',
                       showlegend=False)
     return fig
 
-def plot_firing_rate(time_vector, firing_rate, title='Aggregate Firing Rate'):
+def plot_firing_rate(firing_rate, time_vector, title='Aggregate Firing Rate'):
     """
     Plots the firing rate over time.
 
