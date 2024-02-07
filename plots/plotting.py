@@ -11,13 +11,13 @@ def plot_single_channel_raster(boolean_signal, channel_idx, time_vector, title="
     Parameters:
     boolean_signal (numpy.ndarray): The boolean signal indicating spike activity.
     channel_idx (int): The index of the channel to plot.
+    time_vector: Ranges the time in seconds for the signal
     title (str, optional): The title of the plot. Defaults to "Channel Raster Plot".
     xlabel (str, optional): The label for the x-axis. Defaults to "Time".
 
     Returns:
     plotly.graph_objects.Figure: The generated plotly figure.
     """
-    num_time_points = boolean_signal.shape[1]
     spike_times = np.where(boolean_signal[channel_idx])[0]
     spike_time_secs = time_vector[spike_times]
     scatter_trace = go.Scatter(
@@ -35,7 +35,7 @@ def plot_single_channel_raster(boolean_signal, channel_idx, time_vector, title="
     fig = go.Figure(data=[scatter_trace], layout=layout)
     return fig
 
-def plot_raster(boolean_signal, title="Channel Raster Plot", xlabel="Time", ylabel="Channel"):
+def plot_raster(boolean_signal, time_vector, title="Channel Raster Plot", xlabel="Time", ylabel="Channel"):
     """
     Plots a raster plot for multiple channels.
 
@@ -53,14 +53,15 @@ def plot_raster(boolean_signal, title="Channel Raster Plot", xlabel="Time", ylab
     
     for channel_idx in range(num_channels):
         spike_times = np.where(boolean_signal[channel_idx])[0]
-        fig.add_trace(go.Scatter(x=spike_times, y=[channel_idx]*len(spike_times), mode='markers', marker=dict(symbol='line-ns-open', size=5)))
+        spike_times_sec = time_vector[spike_times]
+        fig.add_trace(go.Scatter(x=spike_times_sec, y=[channel_idx]*len(spike_times), mode='markers', marker=dict(symbol='line-ns-open', size=5)))
 
     fig.update_layout(
         title=title,
         xaxis_title=xlabel,
         yaxis_title=ylabel,
         yaxis=dict(range=[-0.5, num_channels - 0.5], tickvals=list(range(num_channels))),
-        xaxis=dict(range=[0, num_time_points]),
+        xaxis=dict(range=[time_vector[0], time_vector[-1]]),
         height=1000
     )
     return fig

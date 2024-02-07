@@ -95,7 +95,8 @@ def page_1_layout():
     )
 
 def page_2_layout(data_processor):
-    raster_plot_figure = plot_raster(data_processor.raster)
+    time_vec = np.arange(data_processor.initial_signal[0].shape[0]) / data_processor.sampling_rate
+    raster_plot_figure = plot_raster(data_processor.raster, time_vector=time_vec)
     return dbc.Col([
         html.H4("Neural Signal Analysis Dashboard [60 MEA]", style={'textAlign': 'left', 'margin': '20px'}),
         dcc.Graph(id='raster-plot', figure=raster_plot_figure)], width=10)
